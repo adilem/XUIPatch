@@ -35,10 +35,10 @@ echo "Patching XUI extension...."
 
 # Download the extension files
 wget -q -O /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20170718/xui.so \
-  https://github.com/xuione/XUIPatch/raw/refs/heads/main/extension_7.2.so
+  https://github.com/adilem/XUIPatch/raw/refs/heads/main/extension_7.2.so
 
 wget -q -O /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20190902/xui.so \
-  https://github.com/xuione/XUIPatch/raw/refs/heads/main/extension_7.4.so
+  https://github.com/adilem/XUIPatch/raw/refs/heads/main/extension_7.4.so
 
 # Check if download was successful
 if [ $? -ne 0 ]; then
