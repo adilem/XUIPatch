@@ -50,11 +50,12 @@ fi
 # Dosya sahipliğini ayarla
 chown xui:xui /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-2017*/xui.so
 
-# Lisans dosyası (boş olsa da gerekli)
+# Lisans dosyası oluştur
 touch /home/xui/config/license
 chmod 600 /home/xui/config/license
 
-# Servisi yeniden başlat (doğru yöntem)
+# XUI servisini yeniden başlat
+echo "[+] Restarting XUI service..."
 /home/xui/service stop >/dev/null 2>&1 || true
 sleep 1
 /home/xui/service start >/dev/null 2>&1
@@ -64,5 +65,7 @@ sleep 2
 echo ""
 /home/xui/status
 
+# Kapanış
 echo ""
-echo "✅ Patch and license applied automatically."
+echo "✅ Patch and license applied successfully!"
+exit 0
