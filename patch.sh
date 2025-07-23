@@ -55,11 +55,11 @@ chown xui:xui /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-2017*/xui.so
 touch /home/xui/config/license
 chmod 600 /home/xui/config/license
 
-# Servisi yeniden başlat
+# Servisi yeniden başlat (arka planda)
 echo "[+] Restarting XUI service..."
 /home/xui/service stop >/dev/null 2>&1 || true
 sleep 1
-/home/xui/service start >/dev/null 2>&1
+nohup /home/xui/service start >/dev/null 2>&1 &
 sleep 2
 
 # Durumu sadece kısa özetle göster
