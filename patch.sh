@@ -1,4 +1,5 @@
 #!/bin/bash
+
 CONFIG_FILE="/home/xui/config/config.ini"
 
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -6,15 +7,15 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 1
 fi
 
+# Lisans format doğrulama
 is_valid_license() {
   [[ "$1" =~ ^[0-9a-fA-F]{16}$ ]]
 }
 
-# Geçerli lisans var mı kontrol et
+# Lisans al
 current_license=$(sed -n 's/^license\s*=\s*"\([^"]*\)".*/\1/p' "$CONFIG_FILE")
 
 if ! is_valid_license "$current_license"; then
-  # Geçerli değilse otomatik lisans üret
   generated_license=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 16 | head -n 1)
   echo "[+] No valid license found. Generating license: $generated_license"
 
@@ -39,7 +40,7 @@ wget -q -O /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20170718/xui.so
 wget -q -O /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20190902/xui.so \
   https://github.com/adilem/XUIPatch/raw/refs/heads/main/extension_7.4.so
 
-# Dosyalar indirildi mi?
+# Dosyalar gerçekten indi mi?
 if [ ! -f "/home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20170718/xui.so" ] || \
    [ ! -f "/home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20190902/xui.so" ]; then
   echo "❌ One or more extension files failed to download."
@@ -49,15 +50,18 @@ fi
 # Dosya sahipliğini ayarla
 chown xui:xui /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-2017*/xui.so
 
-# Lisans dosyası oluştur (gerekirse)
+# Lisans dosyası (boş olsa da gerekli)
 touch /home/xui/config/license
 chmod 600 /home/xui/config/license
 
-# XUI servisini yeniden başlat
-echo "[+] Restarting XUI service..."
-service xuione restart
+# Servisi yeniden başlat (doğru yöntem)
+/home/xui/service stop >/dev/null 2>&1 || true
+sleep 1
+/home/xui/service start >/dev/null 2>&1
+sleep 2
 
-# Sistem durumunu göster
+# Durumu göster
+echo ""
 /home/xui/status
 
 echo ""
