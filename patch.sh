@@ -13,7 +13,7 @@ is_valid_license() {
   [[ "$1" =~ ^[0-9a-fA-F]{16}$ ]]
 }
 
-# Read current license from config.ini
+# Read current license
 current_license=$(sed -n 's/^license\s*=\s*"\([^"]*\)".*/\1/p' "$CONFIG_FILE")
 
 if ! is_valid_license "$current_license"; then
@@ -24,7 +24,7 @@ if ! is_valid_license "$current_license"; then
       echo "✅ License updated in config.ini"
       break
     else
-      echo "❌ Invalid license format. Please try again."
+      echo "❌ Invalid license format. Try again."
     fi
   done
 else
@@ -32,34 +32,35 @@ else
 fi
 
 echo ""
-echo "[+] Downloading XUI extension patch files..."
+echo "[+] Downloading XUI patch files..."
 
-# Download .so extension files
+# Download patches
 wget -q -O /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20170718/xui.so \
   https://github.com/adilem/XUIPatch/raw/refs/heads/main/extension_7.2.so
 
 wget -q -O /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20190902/xui.so \
   https://github.com/adilem/XUIPatch/raw/refs/heads/main/extension_7.4.so
 
-# Check if files were downloaded successfully
+# Verify
 if [ ! -f "/home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20170718/xui.so" ] || \
    [ ! -f "/home/xui/bin/php/lib/php/extensions/no-debug-non-zts-20190902/xui.so" ]; then
-  echo "❌ Failed to download patch files. Aborting."
+  echo "❌ Failed to download patch files."
   exit 1
 fi
 
-# Fix file ownership
+# Set ownership
 chown xui:xui /home/xui/bin/php/lib/php/extensions/no-debug-non-zts-2017*/xui.so
 
-# Restart XUI service
+# Restart service
 echo "[+] Restarting XUI service..."
 service xuione restart >/dev/null 2>&1
 sleep 1
 
-# Display XUI status
+# Show status
 echo ""
 /home/xui/status 2>/dev/null || echo "⚠️ Could not retrieve XUI status."
 
+# Final short message
 echo ""
-echo "✅ Patch applied, license configured, and service restarted successfully."
+echo "✅ Patch applied and XUI restarted."
 exit 0
